@@ -26,6 +26,9 @@ def property_detail(request, pk):
 
 @login_required
 def property_create(request):
+    if request.user.role != request.user.Role.AGENT:
+        return HttpResponseForbidden()
+    
     if request.method == "POST":
         form = PropertyForm(request.POST)
 
@@ -48,6 +51,9 @@ def property_create(request):
 @login_required
 def property_edit(request, pk):
     property = get_object_or_404(Property, pk=pk)
+
+    if request.user.role != request.user.Role.AGENT:
+        return HttpResponseForbidden()
 
     if property.owner != request.user:
         return HttpResponseForbidden()
@@ -73,6 +79,9 @@ def property_edit(request, pk):
 @login_required
 def property_delete(request, pk):
     property = get_object_or_404(Property, pk=pk)
+
+    if request.user.role != request.user.Role.AGENT:
+        return HttpResponseForbidden()
 
     if property.owner != request.user:
         return HttpResponseForbidden()
