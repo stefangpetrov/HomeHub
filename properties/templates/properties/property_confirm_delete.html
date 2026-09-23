@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete Property - HomeHub</title>
+</head>
+<body>
+
+    <h1>Delete Property</h1>
+
+    <p>
+        Are you sure you want to delete
+        <strong>{{ property.title }}</strong>?
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <button type="submit">Yes, Delete Property</button>
+    </form>
+
+    <a href="{% url 'property_detail' property.pk %}">
+        Cancel
+    </a>
+
+</body>
+</html>

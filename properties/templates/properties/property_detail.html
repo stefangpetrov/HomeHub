@@ -26,5 +26,15 @@
 
     <p>Listed on: {{ property.created_at }}</p>
 
+    {% if request.user == property.owner %}
+        <a href="{% url 'property_edit' property.pk %}">
+            Edit Property
+        </a>
+        
+        <a href="{% url 'property_delete' property.pk %}">
+            Delete Property
+        </a>
+    {% endif %}
+
 </body>
 </html>

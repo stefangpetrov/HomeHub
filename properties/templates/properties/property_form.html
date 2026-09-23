@@ -6,14 +6,26 @@
 </head>
 <body>
 
-    <h1>Create Property</h1>
+    <h1>
+    {% if property %}
+        Edit Property
+    {% else %}
+        Create Property
+    {% endif %}
+</h1>
 
     <form method="post">
         {% csrf_token %}
 
         {{ form.as_p }}
 
-        <button type="submit">Create Property</button>
+        <button type="submit">
+            {% if property %}
+                Save Changes
+            {% else %}
+                Create Property
+            {% endif %}
+        </button>   
     </form>
 
     <a href="{% url 'property_list' %}">Back to properties</a>
