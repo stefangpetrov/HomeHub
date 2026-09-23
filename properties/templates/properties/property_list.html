@@ -7,6 +7,18 @@
 <body>
 
     <h1>HomeHub Properties</h1>
+    {% if request.user.is_authenticated %}
+        <p>
+            Logged in as: {{ request.user.username }}
+        </p>
+
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
+    {% else %}
+        <a href="{% url 'login' %}">Login</a>
+    {% endif %}
     <a href="{% url 'property_create' %}">
         Create Property
     </a>

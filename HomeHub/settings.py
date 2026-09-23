@@ -59,7 +59,7 @@ ROOT_URLCONF = 'HomeHub.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -136,3 +136,7 @@ MAILERS = {
 }
 
 AUTH_USER_MODEL = "users.User"
+
+LOGIN_URL = "/login/"
+LOGIN_REDIRECT_URL = "/properties/"
+LOGOUT_REDIRECT_URL = "/properties/"
