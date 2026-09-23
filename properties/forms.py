@@ -1,6 +1,8 @@
 from django import forms
 
-from .models import Property
+from .models import Property, PropertyImage
+
+
 
 
 class PropertyForm(forms.ModelForm):
@@ -21,3 +23,9 @@ class PropertyForm(forms.ModelForm):
             "property_type",
             "status",
         ]
+
+class PropertyImageForm(forms.ModelForm):
+
+    class Meta:
+        model = PropertyImage
+        fields = ["image"]

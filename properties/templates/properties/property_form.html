@@ -14,10 +14,18 @@
     {% endif %}
 </h1>
 
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
 
         {{ form.as_p }}
+        <label for="image">Property Image</label>
+        <input
+            type="file"
+            name="images"
+            id="images"
+            accept="image/*"
+            multiple
+        >
 
         <button type="submit">
             {% if property %}

@@ -14,6 +14,31 @@
 
     <h2>€{{ property.price }}</h2>
 
+    <h3>Images</h3>
+    {% for image in property.images.all %}
+        <div>
+            <img
+                src="{{ image.image.url }}"
+                alt="{{ property.title }}"
+                width="400"
+            >
+
+            {% if request.user == property.owner or request.user.role == "ADMIN" %}
+                <form
+                    method="post"
+                    action="{% url 'property_image_delete' image.pk %}"
+                >
+                    {% csrf_token %}
+                    <button type="submit">
+                        Delete Image
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+    {% empty %}
+        <p>No images available.</p>
+    {% endfor %}
+
     <p>Area: {{ property.area }} m²</p>
     <p>Bedrooms: {{ property.bedrooms }}</p>
     <p>Bathrooms: {{ property.bathrooms }}</p>
@@ -26,11 +51,11 @@
 
     <p>Listed on: {{ property.created_at }}</p>
 
-    {% if request.user == property.owner %}
+    {% if request.user == property.owner or request.user.role == "ADMIN" %}
         <a href="{% url 'property_edit' property.pk %}">
             Edit Property
         </a>
-        
+
         <a href="{% url 'property_delete' property.pk %}">
             Delete Property
         </a>

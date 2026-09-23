@@ -91,4 +91,18 @@ class Property(models.Model):
     def __str__(self):
         return self.title
 
+class PropertyImage(models.Model):
+
+    property = models.ForeignKey(
+        Property,
+        on_delete=models.CASCADE,
+        related_name="images"
+    )
+
+    image = models.ImageField(upload_to="properties/")
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Image for {self.property.title}"
 
