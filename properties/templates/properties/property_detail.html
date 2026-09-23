@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ property.title }} - HomeHub</title>
+</head>
+<body>
+
+    <a href="{% url 'property_list' %}">← Back to properties</a>
+
+    <h1>{{ property.title }}</h1>
+
+    <p>{{ property.description }}</p>
+
+    <h2>€{{ property.price }}</h2>
+
+    <p>Area: {{ property.area }} m²</p>
+    <p>Bedrooms: {{ property.bedrooms }}</p>
+    <p>Bathrooms: {{ property.bathrooms }}</p>
+    <p>Floor: {{ property.floor }} / {{ property.total_floors }}</p>
+
+    <p>Location: {{ property.city }}, {{ property.address }}</p>
+
+    <p>Type: {{ property.get_property_type_display }}</p>
+    <p>Status: {{ property.get_status_display }}</p>
+
+    <p>Listed on: {{ property.created_at }}</p>
+
+</body>
+</html>

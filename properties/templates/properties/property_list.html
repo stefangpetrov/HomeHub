@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HomeHub - Properties</title>
+</head>
+<body>
+
+    <h1>HomeHub Properties</h1>
+
+    {% for property in properties %}
+        <div>
+            <h2>
+                <a href="{% url 'property_detail' property.pk %}">
+                    {{ property.title }}
+                </a>
+            </h2>
+
+            <p>{{ property.description }}</p>
+
+            <p>Price: €{{ property.price }}</p>
+            <p>Area: {{ property.area }} m²</p>
+            <p>Bedrooms: {{ property.bedrooms }}</p>
+            <p>Bathrooms: {{ property.bathrooms }}</p>
+            <p>Location: {{ property.city }}, {{ property.address }}</p>
+            <p>Type: {{ property.get_property_type_display }}</p>
+            <p>Status: {{ property.get_status_display }}</p>
+        </div>
+
+        <hr>
+    {% empty %}
+        <p>No properties available.</p>
+    {% endfor %}
+
+</body>
+</html>
