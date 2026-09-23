@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib.auth.decorators import login_required
 
 from .models import Property
 from .forms import PropertyForm
@@ -22,6 +23,7 @@ def property_detail(request, pk):
 
     return render(request, "properties/property_detail.html", context)
 
+@login_required
 def property_create(request):
     if request.method == "POST":
         form = PropertyForm(request.POST)

@@ -7,6 +7,9 @@
 <body>
 
     <h1>HomeHub Properties</h1>
+    <a href="{% url 'property_create' %}">
+        Create Property
+    </a>
 
     {% for property in properties %}
         <div>
