@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block content %}
+
+    <div class="text-center mb-5">
+        <h1>Welcome to HomeHub</h1>
+
+        <p class="lead">
+            Find your next property.
+        </p>
+
+        <a
+            href="{% url 'property_list' %}"
+            class="btn btn-primary"
+        >
+            Browse Properties
+        </a>
+    </div>
+
+
+    <h2 class="mb-4">
+        Latest Properties
+    </h2>
+
+
+    <div class="row">
+
+        {% for property in featured_properties %}
+
+            <div class="col-md-6 col-lg-4 mb-4">
+
+                <div class="card h-100">
+
+                    {% with image=property.images.first %}
+
+                        {% if image %}
+                            <img
+                                src="{{ image.image.url }}"
+                                class="card-img-top"
+                                alt="{{ property.title }}"
+                                style="height: 220px; object-fit: cover;"
+                            >
+                        {% endif %}
+
+                    {% endwith %}
+
+                    <div class="card-body">
+
+                        <h5 class="card-title">
+                            {{ property.title }}
+                        </h5>
+
+                        <p class="card-text">
+                            {{ property.city }}
+                        </p>
+
+                        <p class="card-text">
+                            <strong>€{{ property.price }}</strong>
+                        </p>
+
+                        <p class="card-text">
+                            {{ property.area }} m²
+                            · {{ property.bedrooms }} bedrooms
+                            · {{ property.bathrooms }} bathrooms
+                        </p>
+
+                        <a
+                            href="{% url 'property_detail' property.pk %}"
+                            class="btn btn-outline-primary"
+                        >
+                            View Property
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        {% empty %}
+
+            <p>
+                No properties available yet.
+            </p>
+
+        {% endfor %}
+
+    </div>
+
+{% endblock %}
