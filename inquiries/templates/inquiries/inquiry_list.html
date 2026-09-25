@@ -1,105 +1,229 @@
 {% extends "base.html" %}
 
 {% block title %}
-    Inquiries
+    Inquiries - HomeHub
 {% endblock %}
 
 {% block content %}
 
-    <h1 class="mb-4">
-        Inquiries
-    </h1>
+    <!-- Header -->
 
-    {% for inquiry in inquiries %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
 
-        <div class="card mb-3">
+        <div>
+            <h1 class="mb-1">
+                Inquiries
+            </h1>
 
-            <div class="card-body">
+            <p class="text-muted mb-0">
+                Manage inquiries from potential clients.
+            </p>
+        </div>
 
-                <h5 class="card-title">
-                    {{ inquiry.property.title }}
-                </h5>
+        <span class="badge bg-primary fs-6">
+            {{ inquiries|length }}
+        </span>
 
-                <p class="card-text">
-                    <strong>From:</strong>
-                    {{ inquiry.user.username }}
-                </p>
+    </div>
 
-                <p class="card-text">
-                    <strong>Email:</strong>
-                    {{ inquiry.user.email }}
-                </p>
 
-                <p class="card-text">
-                    <strong>Message:</strong>
-                    {{ inquiry.message }}
-                </p>
+    <!-- Inquiry List -->
 
-                <form
-                    method="post"
-                    action="{% url 'update_inquiry_status' inquiry.pk %}"
-                    class="mb-3"
-                >
+    <div class="row g-4">
 
-                    {% csrf_token %}
+        {% for inquiry in inquiries %}
 
-                    <label for="status-{{ inquiry.pk }}" class="form-label">
-                        <strong>Status:</strong>
-                    </label>
+            <div class="col-12">
 
-                    <div class="d-flex gap-2">
+                <div class="card shadow-sm">
 
-                        <select
-                            name="status"
-                            id="status-{{ inquiry.pk }}"
-                            class="form-select"
-                        >
+                    <div class="card-body p-4">
 
-                            {% for value, label in inquiry.Status.choices %}
+                        <div class="row g-4">
 
-                                <option
-                                    value="{{ value }}"
-                                    {% if inquiry.status == value %}selected{% endif %}
-                                >
-                                    {{ label }}
-                                </option>
+                            <!-- Inquiry Information -->
 
-                            {% endfor %}
+                            <div class="col-lg-8">
 
-                        </select>
+                                <div class="d-flex justify-content-between align-items-start mb-3">
 
-                        <button
-                            type="submit"
-                            class="btn btn-primary"
-                        >
-                            Update
-                        </button>
+                                    <div>
+
+                                        <h4 class="mb-1">
+                                            {{ inquiry.property.title }}
+                                        </h4>
+
+                                        <p class="text-muted mb-0">
+                                            {{ inquiry.property.city }}
+                                        </p>
+
+                                    </div>
+
+
+                                    {% if inquiry.status == "NEW" %}
+
+                                        <span class="badge bg-primary">
+                                            {{ inquiry.get_status_display }}
+                                        </span>
+
+                                    {% elif inquiry.status == "CONTACTED" %}
+
+                                        <span class="badge bg-warning text-dark">
+                                            {{ inquiry.get_status_display }}
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="badge bg-success">
+                                            {{ inquiry.get_status_display }}
+                                        </span>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <div class="mb-4">
+
+                                    <div class="text-muted small mb-1">
+                                        From
+                                    </div>
+
+                                    <strong>
+                                        {{ inquiry.user.username }}
+                                    </strong>
+
+                                    {% if inquiry.user.email %}
+
+                                        <div class="text-muted">
+                                            {{ inquiry.user.email }}
+                                        </div>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <div class="mb-3">
+
+                                    <div class="text-muted small mb-1">
+                                        Message
+                                    </div>
+
+                                    <p class="mb-0">
+                                        {{ inquiry.message }}
+                                    </p>
+
+                                </div>
+
+
+                                <p class="text-muted small mb-0">
+                                    Received:
+                                    {{ inquiry.created_at|date:"d.m.Y H:i" }}
+                                </p>
+
+                            </div>
+
+
+                            <!-- Actions -->
+
+                            <div class="col-lg-4">
+
+                                <div class="border rounded p-3 h-100">
+
+                                    <h6 class="mb-3">
+                                        Update Status
+                                    </h6>
+
+                                    <form
+                                        method="post"
+                                        action="{% url 'update_inquiry_status' inquiry.pk %}"
+                                    >
+
+                                        {% csrf_token %}
+
+                                        <select
+                                            name="status"
+                                            id="status-{{ inquiry.pk }}"
+                                            class="form-select mb-3"
+                                        >
+
+                                            {% for value, label in inquiry.Status.choices %}
+
+                                                <option
+                                                    value="{{ value }}"
+                                                    {% if inquiry.status == value %}
+                                                        selected
+                                                    {% endif %}
+                                                >
+                                                    {{ label }}
+                                                </option>
+
+                                            {% endfor %}
+
+                                        </select>
+
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-primary w-100 mb-2"
+                                        >
+                                            Update Status
+                                        </button>
+
+                                    </form>
+
+
+                                    <a
+                                        href="{% url 'property_detail' inquiry.property.pk %}"
+                                        class="btn btn-outline-secondary w-100"
+                                    >
+                                        View Property
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </div>
 
                     </div>
 
-                </form>
-
-                <p class="text-muted">
-                    {{ inquiry.created_at|date:"d.m.Y H:i" }}
-                </p>
-
-                <a
-                    href="{% url 'property_detail' inquiry.property.pk %}"
-                    class="btn btn-outline-primary"
-                >
-                    View Property
-                </a>
+                </div>
 
             </div>
 
-        </div>
+        {% empty %}
 
-    {% empty %}
+            <div class="col-12">
 
-        <p>
-            No inquiries yet.
-        </p>
+                <div class="card shadow-sm">
 
-    {% endfor %}
+                    <div class="card-body text-center py-5">
+
+                        <h4 class="mb-2">
+                            No inquiries yet
+                        </h4>
+
+                        <p class="text-muted mb-4">
+                            New property inquiries will appear here.
+                        </p>
+
+                        <a
+                            href="{% url 'property_list' %}"
+                            class="btn btn-primary"
+                        >
+                            Browse Properties
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+    </div>
 
 {% endblock %}

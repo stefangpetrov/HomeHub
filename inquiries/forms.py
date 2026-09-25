@@ -13,6 +13,7 @@ class InquiryForm(forms.ModelForm):
             "message": forms.Textarea(
                 attrs={
                     "rows": 5,
+                    "class": "form-control",
                     "placeholder": "Write your message..."
                 }
             )

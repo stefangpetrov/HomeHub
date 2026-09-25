@@ -1,38 +1,198 @@
-<h1>My Favorites</h1>
+{% extends "base.html" %}
 
-{% for favorite in favorites %}
+{% block title %}
+    My Favorites - HomeHub
+{% endblock %}
 
-    <div>
-        <h2>
-            <a href="{% url 'property_detail' favorite.property.pk %}">
-                {{ favorite.property.title }}
-            </a>
-        </h2>
+{% block content %}
 
-        <p>Price: €{{ favorite.property.price }}</p>
-        <p>Area: {{ favorite.property.area }} m²</p>
-        <p>City: {{ favorite.property.city }}</p>
-        <p>Bedrooms: {{ favorite.property.bedrooms }}</p>
+    <!-- Header -->
 
-        <a href="{% url 'property_detail' favorite.property.pk %}">
-            View Property
-        </a>
+    <div class="mb-4">
 
-        <form
-            method="post"
-            action="{% url 'toggle_favorite' favorite.property.pk %}"
-        >
-            {% csrf_token %}
-            <button type="submit">
-                Remove from Favorites
-            </button>
-        </form>
+        <h1 class="mb-1">
+            My Favorites
+        </h1>
+
+        <p class="text-muted mb-0">
+            Properties you have saved for later.
+        </p>
+
     </div>
 
-    <hr>
 
-{% empty %}
+    <!-- Favorites -->
 
-    <p>You have no favorite properties.</p>
+    <div class="row g-4">
 
-{% endfor %}
+        {% for favorite in favorites %}
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="card h-100 shadow-sm">
+
+                    {% with image=favorite.property.images.first %}
+
+                        {% if image %}
+
+                            <img
+                                src="{{ image.image.url }}"
+                                class="card-img-top"
+                                alt="{{ favorite.property.title }}"
+                                style="
+                                    height: 220px;
+                                    object-fit: cover;
+                                "
+                            >
+
+                        {% else %}
+
+                            <div
+                                class="bg-secondary-subtle d-flex align-items-center justify-content-center"
+                                style="height: 220px;"
+                            >
+                                <span class="text-muted">
+                                    No image available
+                                </span>
+                            </div>
+
+                        {% endif %}
+
+                    {% endwith %}
+
+
+                    <div class="card-body d-flex flex-column">
+
+                        <div class="mb-2">
+
+                            <span class="badge bg-primary">
+                                {{ favorite.property.get_property_type_display }}
+                            </span>
+
+                            {% if favorite.property.status == "ACTIVE" %}
+
+                                <span class="badge bg-success">
+                                    {{ favorite.property.get_status_display }}
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-secondary">
+                                    {{ favorite.property.get_status_display }}
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <h5 class="card-title">
+                            {{ favorite.property.title }}
+                        </h5>
+
+
+                        <p class="text-muted mb-2">
+                            {{ favorite.property.city }}
+                        </p>
+
+
+                        <h4 class="mb-3">
+                            €{{ favorite.property.price }}
+                        </h4>
+
+
+                        <div class="small text-muted mb-3">
+
+                            <span>
+                                {{ favorite.property.area }} m²
+                            </span>
+
+                            <span class="mx-1">
+                                ·
+                            </span>
+
+                            <span>
+                                {{ favorite.property.bedrooms }} bedrooms
+                            </span>
+
+                            <span class="mx-1">
+                                ·
+                            </span>
+
+                            <span>
+                                {{ favorite.property.bathrooms }} bathrooms
+                            </span>
+
+                        </div>
+
+
+                        <div class="mt-auto d-flex gap-2">
+
+                            <a
+                                href="{% url 'property_detail' favorite.property.pk %}"
+                                class="btn btn-outline-primary flex-grow-1"
+                            >
+                                View Property
+                            </a>
+
+
+                            <form
+                                method="post"
+                                action="{% url 'toggle_favorite' favorite.property.pk %}"
+                            >
+
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-outline-danger"
+                                    title="Remove from favorites"
+                                >
+                                    ♥
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        {% empty %}
+
+            <div class="col-12">
+
+                <div class="card shadow-sm">
+
+                    <div class="card-body text-center py-5">
+
+                        <h4 class="mb-2">
+                            No favorites yet
+                        </h4>
+
+                        <p class="text-muted mb-4">
+                            Save properties you are interested in
+                            and they will appear here.
+                        </p>
+
+                        <a
+                            href="{% url 'property_list' %}"
+                            class="btn btn-primary"
+                        >
+                            Browse Properties
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+{% endblock %}
