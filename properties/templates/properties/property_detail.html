@@ -49,6 +49,22 @@
     <p>Type: {{ property.get_property_type_display }}</p>
     <p>Status: {{ property.get_status_display }}</p>
 
+    {% if request.user.is_authenticated %}
+        <form method="post" action="{% url 'toggle_favorite' property.pk %}">
+            {% csrf_token %}
+
+            {% if is_favorite %}
+                <button type="submit">
+                    Remove from Favorites
+                </button>
+            {% else %}
+                <button type="submit">
+                    Add to Favorites
+                </button>
+            {% endif %}
+        </form>
+    {% endif %}
+
     <p>Listed on: {{ property.created_at }}</p>
 
     {% if request.user == property.owner or request.user.role == "ADMIN" %}

@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.core.paginator import Paginator
 
+from favorites.models import Favorite
+
 from .models import Property, PropertyImage
 from .forms import PropertyForm
 
@@ -70,8 +72,17 @@ def property_list(request):
 def property_detail(request, pk):
     property = get_object_or_404(Property, pk=pk)
 
+    is_favorite = False
+
+    if request.user.is_authenticated:
+        is_favorite = Favorite.objects.filter(
+            user=request.user,
+            property=property
+        ).exists()
+
     context = {
         "property": property,
+        "is_favorite": is_favorite,
     }
 
     return render(request, "properties/property_detail.html", context)
