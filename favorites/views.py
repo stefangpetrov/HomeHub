@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 
 from properties.models import Property
 
@@ -23,4 +23,16 @@ def toggle_favorite(request, pk):
             property=property
         )
 
-    return redirect("property_detail", pk=property.pk)
+    return redirect(request.META.get("HTTP_REFERER", "property_detail"))
+
+@login_required
+def favorite_list(request):
+    favorites = Favorite.objects.filter(
+        user=request.user
+    ).select_related("property")
+
+    context = {
+        "favorites": favorites,
+    }
+
+    return render(request, "favorites/favorite_list.html", context)

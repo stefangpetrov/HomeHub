@@ -1,0 +1,38 @@
+<h1>My Favorites</h1>
+
+{% for favorite in favorites %}
+
+    <div>
+        <h2>
+            <a href="{% url 'property_detail' favorite.property.pk %}">
+                {{ favorite.property.title }}
+            </a>
+        </h2>
+
+        <p>Price: €{{ favorite.property.price }}</p>
+        <p>Area: {{ favorite.property.area }} m²</p>
+        <p>City: {{ favorite.property.city }}</p>
+        <p>Bedrooms: {{ favorite.property.bedrooms }}</p>
+
+        <a href="{% url 'property_detail' favorite.property.pk %}">
+            View Property
+        </a>
+
+        <form
+            method="post"
+            action="{% url 'toggle_favorite' favorite.property.pk %}"
+        >
+            {% csrf_token %}
+            <button type="submit">
+                Remove from Favorites
+            </button>
+        </form>
+    </div>
+
+    <hr>
+
+{% empty %}
+
+    <p>You have no favorite properties.</p>
+
+{% endfor %}
