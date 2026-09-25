@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Inquiries
+{% endblock %}
+
+{% block content %}
+
+    <h1 class="mb-4">
+        Inquiries
+    </h1>
+
+    {% for inquiry in inquiries %}
+
+        <div class="card mb-3">
+
+            <div class="card-body">
+
+                <h5 class="card-title">
+                    {{ inquiry.property.title }}
+                </h5>
+
+                <p class="card-text">
+                    <strong>From:</strong>
+                    {{ inquiry.user.username }}
+                </p>
+
+                <p class="card-text">
+                    <strong>Email:</strong>
+                    {{ inquiry.user.email }}
+                </p>
+
+                <p class="card-text">
+                    <strong>Message:</strong>
+                    {{ inquiry.message }}
+                </p>
+
+                <form
+                    method="post"
+                    action="{% url 'update_inquiry_status' inquiry.pk %}"
+                    class="mb-3"
+                >
+
+                    {% csrf_token %}
+
+                    <label for="status-{{ inquiry.pk }}" class="form-label">
+                        <strong>Status:</strong>
+                    </label>
+
+                    <div class="d-flex gap-2">
+
+                        <select
+                            name="status"
+                            id="status-{{ inquiry.pk }}"
+                            class="form-select"
+                        >
+
+                            {% for value, label in inquiry.Status.choices %}
+
+                                <option
+                                    value="{{ value }}"
+                                    {% if inquiry.status == value %}selected{% endif %}
+                                >
+                                    {{ label }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                        >
+                            Update
+                        </button>
+
+                    </div>
+
+                </form>
+
+                <p class="text-muted">
+                    {{ inquiry.created_at|date:"d.m.Y H:i" }}
+                </p>
+
+                <a
+                    href="{% url 'property_detail' inquiry.property.pk %}"
+                    class="btn btn-outline-primary"
+                >
+                    View Property
+                </a>
+
+            </div>
+
+        </div>
+
+    {% empty %}
+
+        <p>
+            No inquiries yet.
+        </p>
+
+    {% endfor %}
+
+{% endblock %}
