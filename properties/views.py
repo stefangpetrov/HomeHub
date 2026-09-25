@@ -25,15 +25,32 @@ def property_list(request):
         )
 
     if min_price:
-        properties = properties.filter(
-            price__gte=min_price
-        )
+        try:
+            min_price = float(min_price)
+            properties = properties.filter(
+                price__gte=min_price
+            )
+        except (ValueError, TypeError):
+            min_price = ""
 
     if max_price:
-        properties = properties.filter(
-            price__lte=max_price
-        )
+        try:
+            max_price = float(max_price)
+            properties = properties.filter(
+                price__lte=max_price
+            )
+        except (ValueError, TypeError):
+            max_price = ""
 
+    if min_bedrooms:
+        try:
+            min_bedrooms = int(min_bedrooms)
+            properties = properties.filter(
+                bedrooms__gte=min_bedrooms
+            )
+        except (ValueError, TypeError):
+            min_bedrooms = ""
+    
     if property_type:
         properties = properties.filter(
             property_type=property_type
@@ -44,16 +61,15 @@ def property_list(request):
             city__icontains=city
         )
 
-    if min_bedrooms:
-        properties = properties.filter(
-            bedrooms__gte=min_bedrooms
-        )
 
     paginator = Paginator(properties, 6)
 
     page_number = request.GET.get("page")
 
     page_obj = paginator.get_page(page_number)
+
+    query_params = request.GET.copy()
+    query_params.pop("page", None)
 
     context = {
         "properties": page_obj,
@@ -65,6 +81,7 @@ def property_list(request):
         "city": city,
         "min_bedrooms": min_bedrooms,
         "property_types": Property.PropertyType.choices,
+        "query_params": query_params.urlencode(),
     }
 
     return render(request, "properties/property_list.html", context)
@@ -166,19 +183,18 @@ def property_delete(request, pk):
     property = get_object_or_404(Property, pk=pk)
 
     if request.user.role == request.user.Role.ADMIN:
-        can_edit = True
+        can_delete = True
+
     elif (
         request.user.role == request.user.Role.AGENT
         and property.owner == request.user
     ):
-        can_edit = True
-    else:
-        can_edit = False
-    
-    if not can_edit:
-        return HttpResponseForbidden()
+        can_delete = True
 
-    if property.owner != request.user:
+    else:
+        can_delete = False
+
+    if not can_delete:
         return HttpResponseForbidden()
 
     if request.method == "POST":
@@ -189,7 +205,11 @@ def property_delete(request, pk):
         "property": property,
     }
 
-    return render(request, "properties/property_confirm_delete.html", context)
+    return render(
+        request,
+        "properties/property_confirm_delete.html",
+        context
+    )
 
 
 @login_required
