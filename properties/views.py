@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.core.paginator import Paginator
-
+from saved_searches.services import check_saved_searches
 from favorites.models import Favorite
 
 from .models import Property, PropertyImage
@@ -119,6 +119,8 @@ def property_create(request):
             property = form.save(commit=False)
             property.owner = request.user
             property.save() 
+            
+            check_saved_searches(property)
 
             for image in request.FILES.getlist("images"):
                 PropertyImage.objects.create(

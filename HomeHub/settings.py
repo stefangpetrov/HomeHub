@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'properties',
     'favorites',
     'core',
-    "inquiries"
+    "inquiries",
+    "saved_searches",
 ]
 
 MIDDLEWARE = [

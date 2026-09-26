@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}
+    My Saved Searches - HomeHub
+{% endblock %}
+
+{% block content %}
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h1 class="h2 mb-1">
+                My Saved Searches
+            </h1>
+
+            <p class="text-muted mb-0">
+                Manage your saved property searches.
+            </p>
+        </div>
+
+        <a
+            href="{% url 'property_list' %}"
+            class="btn btn-outline-primary"
+        >
+            Browse Properties
+        </a>
+
+    </div>
+
+
+    {% if saved_searches %}
+
+        <div class="row g-4">
+
+            {% for saved_search in saved_searches %}
+
+                <div class="col-md-6 col-lg-4">
+
+                    <div class="card h-100 shadow-sm">
+
+                        <div class="card-body">
+
+                            <h5 class="card-title">
+                                {{ saved_search.name }}
+                            </h5>
+
+                            <div class="mt-3">
+
+                                {% if saved_search.city %}
+                                    <span class="badge text-bg-light border me-1 mb-1">
+                                        City: {{ saved_search.city }}
+                                    </span>
+                                {% endif %}
+
+                                {% if saved_search.property_type %}
+                                    <span class="badge text-bg-light border me-1 mb-1">
+                                        Type: {{ saved_search.get_property_type_display }}
+                                    </span>
+                                {% endif %}
+
+                                {% if saved_search.min_price %}
+                                    <span class="badge text-bg-light border me-1 mb-1">
+                                        Min: €{{ saved_search.min_price|floatformat:0 }}
+                                    </span>
+                                {% endif %}
+
+                                {% if saved_search.max_price %}
+                                    <span class="badge text-bg-light border me-1 mb-1">
+                                        Max: €{{ saved_search.max_price|floatformat:0 }}
+                                    </span>
+                                {% endif %}
+
+                                {% if saved_search.min_bedrooms %}
+                                    <span class="badge text-bg-light border me-1 mb-1">
+                                        {{ saved_search.min_bedrooms }}+ bedrooms
+                                    </span>
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                        <div class="card-footer bg-white border-top-0">
+
+                            <div class="d-flex gap-2">
+
+                                <a
+                                    href="{% url 'property_list' %}?{% if saved_search.city %}city={{ saved_search.city|urlencode }}{% endif %}{% if saved_search.property_type %}&property_type={{ saved_search.property_type|urlencode }}{% endif %}{% if saved_search.min_price %}&min_price={{ saved_search.min_price }}{% endif %}{% if saved_search.max_price %}&max_price={{ saved_search.max_price }}{% endif %}{% if saved_search.min_bedrooms %}&min_bedrooms={{ saved_search.min_bedrooms }}{% endif %}"
+                                    class="btn btn-primary btn-sm"
+                                >
+                                    Search
+                                </a>
+
+                                <form
+                                    method="post"
+                                    action="{% url 'delete_saved_search' saved_search.pk %}"
+                                    class="d-inline"
+                                >
+
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-outline-danger btn-sm"
+                                    >
+                                        Delete
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="card shadow-sm">
+
+            <div class="card-body text-center py-5">
+
+                <h3 class="h5">
+                    No saved searches yet
+                </h3>
+
+                <p class="text-muted">
+                    Apply some property filters and save your search.
+                </p>
+
+                <a
+                    href="{% url 'property_list' %}"
+                    class="btn btn-primary"
+                >
+                    Browse Properties
+                </a>
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+{% endblock %}
