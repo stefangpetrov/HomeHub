@@ -7,7 +7,7 @@ from django.shortcuts import (
 from django.contrib import messages
 
 from .forms import SavedSearchForm
-from .models import SavedSearch
+from .models import Notification, SavedSearch
 
 
 @login_required
@@ -88,3 +88,67 @@ def delete_saved_search(request, pk):
         saved_search.delete()
 
     return redirect("saved_search_list")
+
+
+@login_required
+def notification_list(request):
+
+    notifications = Notification.objects.filter(
+        user=request.user
+    ).select_related(
+        "property",
+        "saved_search"
+    ).order_by("-created_at")
+
+    context = {
+        "notifications": notifications,
+    }
+
+    return render(
+        request,
+        "saved_searches/notification_list.html",
+        context
+    )
+
+@login_required
+def mark_notification_as_read(request, pk):
+
+    notification = get_object_or_404(
+        Notification,
+        pk=pk,
+        user=request.user
+    )
+
+    if request.method == "POST":
+        notification.is_read = True
+        notification.save(update_fields=["is_read"])
+
+    return redirect("notification_list")
+
+
+def unread_notification_count(request):
+
+    if not request.user.is_authenticated:
+        return {
+            "unread_notification_count": 0
+        }
+
+    return {
+        "unread_notification_count": request.user.notifications.filter(
+            is_read=False
+        ).count()
+    }
+
+@login_required
+def delete_notification(request, pk):
+
+    notification = get_object_or_404(
+        Notification,
+        pk=pk,
+        user=request.user
+    )
+
+    if request.method == "POST":
+        notification.delete()
+
+    return redirect("notification_list")

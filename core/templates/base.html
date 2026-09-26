@@ -77,6 +77,20 @@
 
                         {% endif %}
 
+                        <a
+                            href="{% url 'notification_list' %}"
+                            class="nav-link position-relative"
+                            title="Notifications"
+                        >
+                            🔔
+
+                            {% if unread_notification_count > 0 %}
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    {{ unread_notification_count }}
+                                </span>
+                            {% endif %}
+                        </a>
+
                     {% endif %}
 
                 </div>

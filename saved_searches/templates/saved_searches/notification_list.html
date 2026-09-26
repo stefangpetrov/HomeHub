@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Notifications - HomeHub
+{% endblock %}
+
+{% block content %}
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h1 class="h2 mb-1">
+                Notifications
+            </h1>
+
+            <p class="text-muted mb-0">
+                Property alerts based on your saved searches.
+            </p>
+        </div>
+
+        <a
+            href="{% url 'property_list' %}"
+            class="btn btn-outline-primary"
+        >
+            Browse Properties
+        </a>
+
+    </div>
+
+
+    {% if notifications %}
+
+        <div class="list-group shadow-sm">
+
+            {% for notification in notifications %}
+
+                <div class="list-group-item p-4">
+
+                    <div class="d-flex justify-content-between align-items-start gap-3">
+
+                        <div>
+
+                            <h5 class="mb-2">
+                                {{ notification.message }}
+                            </h5>
+
+                            <p class="text-muted mb-2">
+                                Saved search:
+                                <strong>
+                                    {{ notification.saved_search.name }}
+                                </strong>
+                            </p>
+
+                            <p class="mb-0">
+                                {{ notification.property.title }}
+                            </p>
+
+                        </div>
+
+                        <span class="text-muted small text-nowrap">
+                            {{ notification.created_at|date:"d M Y, H:i" }}
+                        </span>
+
+                    </div>
+
+                    <div class="mt-3 d-flex gap-2">
+
+                        <a
+                            href="{% url 'property_detail' notification.property.pk %}"
+                            class="btn btn-primary btn-sm"
+                        >
+                            View Property
+                        </a>
+
+                        {% if not notification.is_read %}
+
+                            <form
+                                method="post"
+                                action="{% url 'mark_notification_as_read' notification.pk %}"
+                            >
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-outline-secondary btn-sm"
+                                >
+                                    Mark as read
+                                </button>
+
+                            </form>
+
+                            
+
+                        {% endif %}
+
+                        <form
+                            method="post"
+                            action="{% url 'delete_notification' notification.pk %}"
+                        >
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="btn btn-outline-danger btn-sm"
+                            >
+                                Delete
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="card shadow-sm">
+
+            <div class="card-body text-center py-5">
+
+                <div class="fs-1 mb-3">
+                    🔔
+                </div>
+
+                <h3 class="h5">
+                    No notifications
+                </h3>
+
+                <p class="text-muted mb-0">
+                    You will see property alerts here when new properties
+                    match your saved searches.
+                </p>
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+{% endblock %}
