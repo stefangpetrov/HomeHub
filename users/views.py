@@ -21,4 +21,4 @@ def register(request):
         "form": form,
     }
 
-    return render(request, "registration/register.html", context)
+    return render(request, "users/register.html", context)
