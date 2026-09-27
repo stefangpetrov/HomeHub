@@ -9,6 +9,8 @@ from .models import Property, PropertyImage
 from .forms import PropertyForm
 
 
+
+
 def property_list(request):
     properties = Property.objects.all()
 
@@ -119,7 +121,7 @@ def property_create(request):
             property = form.save(commit=False)
             property.owner = request.user
             property.save() 
-            
+
             check_saved_searches(property)
 
             for image in request.FILES.getlist("images"):
@@ -236,3 +238,5 @@ def property_image_delete(request, pk):
         image.delete()
 
     return redirect("property_detail", pk=property.pk)
+
+
