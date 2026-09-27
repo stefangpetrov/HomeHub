@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 
 from properties.models import Property
 
@@ -23,7 +24,12 @@ def toggle_favorite(request, pk):
             property=property
         )
 
-    return redirect(request.META.get("HTTP_REFERER", "property_detail"))
+    return redirect(
+        request.META.get(
+            "HTTP_REFERER",
+            reverse("property_detail", args=[property.pk]),
+        ),
+    )
 
 @login_required
 def favorite_list(request):

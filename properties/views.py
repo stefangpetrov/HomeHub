@@ -64,6 +64,8 @@ def property_list(request):
         )
 
 
+    properties = properties.order_by("-created_at")
+    
     paginator = Paginator(properties, 6)
 
     page_number = request.GET.get("page")
